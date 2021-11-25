@@ -8,9 +8,11 @@ import calculateAspectRatio, { gcd } from "calculate-aspect-ratio";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
+  // Data useless for now
   const [data, setData] = useState({});
   const [imagesGood, setImagesGood] = useState([]);
 
+  // Backend URL
   const url = "http://localhost:3003/api";
 
   let aspectRatio = 1;
