@@ -14,7 +14,7 @@ const App = () => {
   const url = "http://localhost:3003/api";
 
   let aspectRatio = 1;
-
+  // The following two functions are to get the height and width of the image
   const getSizesWidth = async (img) => {
     try {
       const { width } = await reactImageSize(img);
@@ -36,11 +36,14 @@ const App = () => {
   };
 
   const fetchData = async () => {
+    // We get the images locations from the back (they are in the frontend public directory)
     axios.get(url).then(async (res) => {
       setData(res.data);
       console.log("res.data: ", res.data);
 
       console.log("Res.data : ", res.data);
+      // This is to get the ratio : like 16:9 or 4:3, from the previously calculated height and width of image
+
       const getRatio = async (dataRaw) => {
         dataRaw.pathStyled.forEach(async (image, index) => {
           const sizeWidth = await getSizesWidth(image);
@@ -48,26 +51,21 @@ const App = () => {
           aspectRatio = calculateAspectRatio(sizeWidth, sizeHeight);
           const greatestCommonDivisor = gcd(sizeWidth, sizeHeight);
 
-          console.log("greatestCommonDivisor: ", greatestCommonDivisor);
-
+          // Some tests to parse the result of aspect ratio and use it
           // const regwidth = new RegExp(/(\d)+:\d+/g);
-          console.log("aspectRatio: ", aspectRatio);
 
           const imagesGoodRaw = dataRaw.pathStyled.map((image) => {
             return {
               src: "." + image,
+              // This is where we set the ratio. Problem : i want to set it dynamically based on the ratio of the image
               width: 16,
               height: 9,
             };
           });
-          // const imagesGoodRaw = dataRaw.pathStyled.map((image) => { //GOOD
-          //   return {
-          //     src: "." + image,
-          //     width: 16,
-          //     height: 9,
-          //   };
-          // });
+          // We set this final state, to use it in the JSX
           setImagesGood(imagesGoodRaw);
+          console.log("greatestCommonDivisor: ", greatestCommonDivisor);
+          console.log("aspectRatio: ", aspectRatio);
           console.log("imageGood: ", imagesGoodRaw);
         });
       };
@@ -83,7 +81,7 @@ const App = () => {
   }, []);
 
   return isLoading ? (
-    <div>IS LOADING, WAIT !!!</div>
+    <div>IS LOADING, Please wait</div>
   ) : imagesGood ? (
     <div>
       <Gallery photos={imagesGood} />
